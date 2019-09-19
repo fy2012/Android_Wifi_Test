@@ -11,48 +11,91 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
+    int speedinfo;
+    String units = "";
+    int strengthinfo;
+    int frequencyinfo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final TextView title = findViewById(R.id.title);
+        //final TextView title = findViewById(R.id.title);
         final Button go = findViewById(R.id.check);
-        final TextView indicator = findViewById(R.id.indicator);
+        final TextView strength = findViewById(R.id.strength);
+        final TextView speed = findViewById(R.id.speed);
+        final TextView frequency = findViewById(R.id.frequency);
+        final TextView is_good = findViewById(R.id.is_good);
+        final TextView is_2_4G = findViewById(R.id.is_2_4G);
 
         go.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                getInfo();
+
                 if(isWifiGood())
-                    title.setText("Wifi is Good!");
+                    is_good.setText("Wifi is Good");
                 else
-                    title.setText("Wifi is not Good!");
+                    is_good.setText("Wifi is not Good");
+
+                if(is_2_4G())
+                    is_2_4G.setText("On 2.4G Wifi");
+                else
+                    is_2_4G.setText("Not on 2.4G Wifi");
+
+                strength.setText("Strength: " + strengthinfo);
+
+                speed.setText("Speed: " + speedinfo + " " + units);
+
+                frequency.setText("Frequency: " + frequencyinfo + "");
 
             }
         });
 
     }
 
+    private void getInfo(){
+        WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+        WifiInfo info = wifiManager.getConnectionInfo();
+
+            speedinfo = info.getLinkSpeed();
+            units = WifiInfo.LINK_SPEED_UNITS;
+    }
+
     private boolean isWifiGood(){
-        int strength = 0;
-        int speed = 0;
-        String units = "";
-        String ssid = "";
+        int strength;
 
         WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
         WifiInfo info = wifiManager.getConnectionInfo();
 
-        if (info.getBSSID() != null) {
-            //WIFI 信号强度分为5级
-            strength = WifiManager.calculateSignalLevel(info.getRssi(), 5);
-            speed = info.getLinkSpeed();
-            units = WifiInfo.LINK_SPEED_UNITS;
-            ssid = info.getSSID();
-            //如果在1级以上，给正面反馈
-            if (strength > 1)
-                return true;
-        }
-        return false;
+        //WIFI 信号强度分为5级
+        strength = WifiManager.calculateSignalLevel(info.getRssi(), 5);
+        //只做显示用
+        strengthinfo = strength;
+        //如果在1级以上，给正面反馈
+        if (strength > 1)
+            return true;
+        else
+            return false;
+    }
+
+    private boolean is_2_4G(){
+
+        int frequency;
+
+        WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+        WifiInfo info = wifiManager.getConnectionInfo();
+
+        //检测Wifi信号频率
+        frequency = info.getFrequency();
+        //只做显示用
+        frequencyinfo = frequency;
+
+        //如果频率在范围之内，给正面反馈
+        if (frequency < 2800 && frequency > 2000)
+            return true;
+        else return false;
     }
 }
