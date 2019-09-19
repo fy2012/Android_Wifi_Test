@@ -2,12 +2,16 @@ package com.example.wifitest;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.os.Vibrator;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
         final TextView frequency = findViewById(R.id.frequency);
         final TextView is_good = findViewById(R.id.is_good);
         final TextView is_2_4G = findViewById(R.id.is_2_4G);
+
+        final Vibrator z = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         go.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,10 +58,15 @@ public class MainActivity extends AppCompatActivity {
                     is_2_4G.setText("Not on 2.4G Wifi");
 
 
-
+            // Vibrate for 500 milliseconds
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    z.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
+                } else {
+                    //deprecated in API 26
+                    z.vibrate(200);
+                }
             }
         });
-
     }
 
     private void getInfo(){
