@@ -35,6 +35,12 @@ public class MainActivity extends AppCompatActivity {
 
                 getInfo();
 
+                strength.setText("Strength: " + strengthinfo);
+
+                speed.setText("Speed: " + speedinfo + " " + units);
+
+                frequency.setText("Frequency: " + frequencyinfo + "");
+
                 if(isWifiGood())
                     is_good.setText("Wifi is Good");
                 else
@@ -45,11 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 else
                     is_2_4G.setText("Not on 2.4G Wifi");
 
-                strength.setText("Strength: " + strengthinfo);
 
-                speed.setText("Speed: " + speedinfo + " " + units);
-
-                frequency.setText("Frequency: " + frequencyinfo + "");
 
             }
         });
@@ -62,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
             speedinfo = info.getLinkSpeed();
             units = WifiInfo.LINK_SPEED_UNITS;
+            strengthinfo = WifiManager.calculateSignalLevel(info.getRssi(), 5);
+            frequencyinfo = info.getFrequency();
     }
 
     private boolean isWifiGood(){
@@ -72,8 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         //WIFI 信号强度分为5级
         strength = WifiManager.calculateSignalLevel(info.getRssi(), 5);
-        //只做显示用
-        strengthinfo = strength;
+
         //如果在1级以上，给正面反馈
         if (strength > 1)
             return true;
@@ -90,8 +93,6 @@ public class MainActivity extends AppCompatActivity {
 
         //检测Wifi信号频率
         frequency = info.getFrequency();
-        //只做显示用
-        frequencyinfo = frequency;
 
         //如果频率在范围之内，给正面反馈
         if (frequency < 2800 && frequency > 2000)
