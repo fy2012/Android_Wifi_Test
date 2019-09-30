@@ -2,6 +2,7 @@ package com.example.wifitest;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.os.Vibrator;
 
 public class MainActivity extends AppCompatActivity {
 
+    final Vibrator z = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         final Button share = findViewById(R.id.share);
 
-        final Vibrator z = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
 
         go.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             else
                 is_good.setText("Wifi is not Good");
 
-            if(wifiTester.getFrequency() < 2800)
+            if(wifiTester.getFrequency() < 2600 && wifiTester.getFrequency() > 2300)
                 is_2_4G.setText("On 2.4G Wifi");
             else
                 is_2_4G.setText("Not on 2.4G Wifi");
@@ -64,7 +66,11 @@ public class MainActivity extends AppCompatActivity {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, "");
+                shareIntent.setType("image/jpeg");
+                startActivity(Intent.createChooser(shareIntent, "Share with:"));
             }
         });
     }

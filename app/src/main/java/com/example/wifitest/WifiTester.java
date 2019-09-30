@@ -40,10 +40,6 @@ public class WifiTester {
         this.frequency = frequency;
     }
 
-    public WifiInfo getWifiInfo() {
-        return wifiinfo;
-    }
-
     public int getSpeed() {
         return speed;
     }
